@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Federal Bureau Of Investigation</title>
+
+<style>
+
+/* ========================= */
+/* CONFIG GENERAL */
+/* ========================= */
+
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url("acceso.jpg") no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+}
+
+/* Overlay oscuro */
+body::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 10, 30, 0.88);
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+/* Partículas */
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+/* Contenido */
+.contenido {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+/* Logo */
+.logo {
+    width: 140px;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite alternate;
+}
+
+/* Título */
+h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+    letter-spacing: 3px;
+}
+
+.subtexto {
+    color: #FFD700;
+    margin-bottom: 40px;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+/* Botones */
+.boton {
+    display: block;
+    width: 280px;
+    padding: 16px;
+    margin: 18px auto;
+    font-size: 17px;
+    background-color: transparent;
+    border: 2px solid #FFD700;
+    color: white;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+.boton:hover {
+    background-color: #FFD700;
+    color: black;
+    transform: scale(1.05);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+@keyframes pulse {
+    from {filter: drop-shadow(0 0 5px #FFD700);}
+    to {filter: drop-shadow(0 0 20px #FFD700);}
+}
+
+/* Pantalla de carga */
+#loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    z-index: 999;
+    animation: fadeOut 1s forwards;
+    animation-delay: 2s;
+}
+
+@keyframes fadeOut {
+    to {opacity: 0; visibility: hidden;}
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="loader">
+    🔒 Conectando al sistema federal...
+</div>
+
+<canvas id="particles"></canvas>
+
+<div class="contenido">
+
+    <img src="logo.png" alt="FBI Logo" class="logo">
+
+    <h1 id="typing"></h1>
+    <div class="subtexto">SISTEMA DE SEGURIDAD NACIONAL</div>
+
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeRentMDns7SoJFya3zQMpWh3VmEc-XDtoFjrT39_z-uhFSeQ/viewform" 
+       target="_blank" 
+       class="boton">
+       POSTULACIONES
+    </a>
+
+    <a href="#" class="boton">ÚLTIMAS NOTICIAS</a>
+    <a href="#" class="boton">DIVISIONES</a>
+
+</div>
+
+<!-- Sonido -->
+<audio id="systemSound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+
+<script>
+
+/* ========================= */
+/* TEXTO QUE SE ESCRIBE SOLO */
+/* ========================= */
+
+const text = "FEDERAL BUREAU OF INVESTIGATION";
+let i = 0;
+function typingEffect() {
+    if (i < text.length) {
+        document.getElementById("typing").innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typingEffect, 60);
+    }
+}
+typingEffect();
+
+/* ========================= */
+/* SONIDO */
+/* ========================= */
+
+setTimeout(() => {
+    document.getElementById("systemSound").play();
+}, 500);
+
+/* ========================= */
+/* PARTÍCULAS DIGITALES */
+/* ========================= */
+
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for (let i = 0; i < 100; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 2,
+        speedY: Math.random() * 1 + 0.5
+    });
+}
+
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "rgba(255,215,0,0.7)";
+
+    particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        p.y += p.speedY;
+        if (p.y > canvas.height) p.y = 0;
+    });
+
+    requestAnimationFrame(animateParticles);
+}
+
+animateParticles();
+
+</script>
+
+</body>
+</html>

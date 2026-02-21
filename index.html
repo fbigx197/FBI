@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FBI Secure Access</title>
+
+<!-- Open Graph -->
+<meta property="og:title" content="Federal Bureau Of Investigation">
+<meta property="og:description" content="Sistema de Acceso Seguro - Terminal Oficial">
+<meta property="og:image" content="https://fbigx.vercel.app/logo.png">
+<meta property="og:url" content="https://fbigx.vercel.app/">
+<meta property="og:type" content="website">
+
+<style>
+
+body {
+    margin: 0;
+    height: 100vh;
+    background: url("acceso.jpg") no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Courier New', monospace;
+    color: #00ffcc;
+    overflow: hidden;
+}
+
+/* Capa oscura */
+body::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    top: 0;
+    left: 0;
+}
+
+/* Contenedor principal */
+.container {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Logo */
+.logo {
+    width: 140px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 10px #00ffcc);
+}
+
+/* Texto animado */
+#typing {
+    font-size: 22px;
+    margin-bottom: 30px;
+}
+
+/* Input */
+input {
+    padding: 10px;
+    font-size: 18px;
+    background: black;
+    border: 2px solid #00ffcc;
+    color: #00ffcc;
+    text-align: center;
+}
+
+/* Botón */
+button {
+    margin-top: 15px;
+    padding: 10px 30px;
+    background: #FFD700;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #e6c200;
+}
+
+/* Error rojo */
+#error {
+    margin-top: 15px;
+    color: red;
+    font-weight: bold;
+    animation: blink 0.5s infinite;
+    display: none;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+/* Glitch */
+.glitch {
+    animation: glitch 0.2s infinite;
+}
+
+@keyframes glitch {
+    0% { transform: translate(2px, -2px); }
+    25% { transform: translate(-2px, 2px); }
+    50% { transform: translate(2px, 2px); }
+    75% { transform: translate(-2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+/* Partículas */
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="particles"></canvas>
+
+<div class="container">
+    <img src="logo.png" class="logo">
+    <div id="typing"></div>
+    <input type="password" id="password" placeholder="INGRESE CLAVE">
+    <br>
+    <button onclick="checkPassword()">ACCEDER</button>
+    <div id="error">⚠ ACCESO DENEGADO</div>
+</div>
+
+<!-- Sonidos locales -->
+<audio id="beep" src="beep.mp3"></audio>
+<audio id="accessSound" src="access.mp3"></audio>
+
+<script>
+
+/* Texto automático */
+const text = "🔐 FBI SECURE TERMINAL - ACCESS REQUIRED";
+let i = 0;
+
+function typeWriter() {
+    if (i < text.length) {
+        document.getElementById("typing").innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, 50);
+    }
+}
+typeWriter();
+
+/* Sistema de clave */
+let attempts = 0;
+const correctPassword = "FBI2026";
+
+function checkPassword() {
+
+    const input = document.getElementById("password").value;
+    const error = document.getElementById("error");
+    const beep = document.getElementById("beep");
+    const accessSound = document.getElementById("accessSound");
+
+    if (attempts >= 3) {
+        error.innerHTML = "🔴 SISTEMA BLOQUEADO";
+        error.style.display = "block";
+        return;
+    }
+
+    if (input === correctPassword) {
+
+        accessSound.play();
+
+        document.body.innerHTML = `
+        <h1 style="color:#00ffcc;text-align:center;margin-top:20%;">
+        🔒 VALIDANDO CREDENCIALES...
+        </h1>`;
+
+        setTimeout(() => {
+            window.location.href = "menu.html";
+        }, 2500);
+
+    } else {
+
+        attempts++;
+        error.style.display = "block";
+        beep.play();
+
+        document.body.classList.add("glitch");
+        setTimeout(() => {
+            document.body.classList.remove("glitch");
+        }, 400);
+    }
+}
+
+/* Partículas */
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for (let i = 0; i < 100; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        speed: Math.random() * 2 + 1
+    });
+}
+
+function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#00ffcc";
+
+    particles.forEach(p => {
+        ctx.fillRect(p.x, p.y, 2, 10);
+        p.y += p.speed;
+        if (p.y > canvas.height) {
+            p.y = 0;
+            p.x = Math.random() * canvas.width;
+        }
+    });
+
+    requestAnimationFrame(drawParticles);
+}
+
+drawParticles();
+
+</script>
+
+</body>
+</html>
