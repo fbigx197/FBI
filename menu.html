@@ -44,11 +44,16 @@ canvas {
     z-index: 0;
 }
 
-/* Contenido */
+/* Contenido con efecto glass */
 .contenido {
     position: relative;
     z-index: 2;
     text-align: center;
+    padding: 40px;
+    border-radius: 12px;
+    background: rgba(0, 20, 50, 0.45);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 215, 0, 0.3);
     animation: fadeIn 1.5s ease-in-out;
 }
 
@@ -66,11 +71,23 @@ h1 {
     letter-spacing: 3px;
 }
 
+/* Cursor terminal */
+#typing::after {
+    content: "|";
+    animation: blink 1s infinite;
+}
+
 .subtexto {
     color: #FFD700;
-    margin-bottom: 40px;
+    margin-bottom: 10px;
     font-size: 14px;
     letter-spacing: 2px;
+}
+
+.lema {
+    font-size: 13px;
+    margin-bottom: 30px;
+    opacity: 0.8;
 }
 
 /* Botones */
@@ -93,6 +110,7 @@ h1 {
     background-color: #FFD700;
     color: black;
     transform: scale(1.05);
+    box-shadow: 0 0 20px #FFD700;
 }
 
 /* Animaciones */
@@ -104,6 +122,10 @@ h1 {
 @keyframes pulse {
     from {filter: drop-shadow(0 0 5px #FFD700);}
     to {filter: drop-shadow(0 0 20px #FFD700);}
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
 }
 
 /* Pantalla de carga */
@@ -125,6 +147,13 @@ h1 {
     to {opacity: 0; visibility: hidden;}
 }
 
+/* Responsive */
+@media (max-width: 600px) {
+    h1 { font-size: 22px; }
+    .boton { width: 90%; font-size: 14px; }
+    .logo { width: 100px; }
+}
+
 </style>
 </head>
 
@@ -142,6 +171,7 @@ h1 {
 
     <h1 id="typing"></h1>
     <div class="subtexto">SISTEMA DE SEGURIDAD NACIONAL</div>
+    <div class="lema">Fidelidad, Valentía e Integridad</div>
 
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSeRentMDns7SoJFya3zQMpWh3VmEc-XDtoFjrT39_z-uhFSeQ/viewform" 
        target="_blank" 
@@ -154,14 +184,11 @@ h1 {
 
 </div>
 
-<!-- Sonido -->
 <audio id="systemSound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
 
 <script>
 
-/* ========================= */
 /* TEXTO QUE SE ESCRIBE SOLO */
-/* ========================= */
 
 const text = "FEDERAL BUREAU OF INVESTIGATION";
 let i = 0;
@@ -174,17 +201,13 @@ function typingEffect() {
 }
 typingEffect();
 
-/* ========================= */
-/* SONIDO */
-/* ========================= */
+/* SONIDO AL PRIMER CLICK (evita bloqueo autoplay) */
 
-setTimeout(() => {
+document.body.addEventListener("click", () => {
     document.getElementById("systemSound").play();
-}, 500);
+}, { once: true });
 
-/* ========================= */
-/* PARTÍCULAS DIGITALES */
-/* ========================= */
+/* PARTÍCULAS */
 
 const canvas = document.getElementById("particles");
 const ctx = canvas.getContext("2d");
@@ -205,19 +228,31 @@ for (let i = 0; i < 100; i++) {
 
 function animateParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     ctx.fillStyle = "rgba(255,215,0,0.7)";
 
     particles.forEach(p => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
+
         p.y += p.speedY;
+
         if (p.y > canvas.height) p.y = 0;
     });
 
     requestAnimationFrame(animateParticles);
 }
+
+canvas.addEventListener("mousemove", e => {
+    particles.forEach(p => {
+        let dx = p.x - e.clientX;
+        let dy = p.y - e.clientY;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 100) {
+            p.y -= 2;
+        }
+    });
+});
 
 animateParticles();
 
